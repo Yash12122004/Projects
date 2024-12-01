@@ -1,0 +1,33 @@
+// `include "sub64bit.v"
+
+`timescale 1ns/1ps 
+module sub_64test;
+reg signed [63:0] a;
+reg signed [63:0] b;
+wire signed [63:0] result;
+wire overflow;
+sub64bit new(a,b,result,overflow);
+initial begin
+    $dumpfile("test_sub64.vcd");
+    $dumpvars(0,sub_64test);
+    a=64'b0000000000000000000000000000000000000000000000000000000000000001;
+    b=64'b0000000000000000000000000000000000000000000000000000000000000000;
+end
+
+initial begin 
+    $monitor("a=",a, " b= ",b," result =",result," overflow=",overflow);
+    #5 
+        //sub without overflow with both positive numbers
+        a=64'b0000000000000000000000000000000000000000000000000000000000000101;
+        b=64'b0000000000000000000000000000000000000000000000000000000000000001;
+        #5
+        //sub without overflow with both negative numbers
+        a=64'b1111111111111111111111111111111111111111111111111111111111111111;
+        b=64'b1111111111111111111111111111111111111111111111111111111111111011;
+        #5
+        //sub with overflow with positive and negative numbers
+        a=64'b0111111111111111111111111111111111111111111111111111111111111111;
+        b=64'b1111111111111111111111111111111111111111111111111111111111111011;
+        
+end
+endmodule
